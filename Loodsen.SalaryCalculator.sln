@@ -16,9 +16,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Loodsen.SalaryCalculator.Te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Loodsen.SalaryCalculator.Benchmarks", "Loodsen.SalaryCalculator.Benchmarks\Loodsen.SalaryCalculator.Benchmarks.csproj", "{13E652C3-0772-42FC-9776-E17254A9A3FC}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workflows", "Workflows", "{651062F1-72CF-43C5-9A1C-D459A6A3D7EA}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Github", "Github", "{6C9E875F-607F-45F5-8889-365DF910B383}"
 	ProjectSection(SolutionItems) = preProject
-		.github\workflows\dotnet.yml = .github\workflows\dotnet.yml
+		.github\dependabot.yml = .github\dependabot.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workflows", "Workflows", "{7522D764-6E83-4CD2-ACEB-3518DB6A78F0}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\ci.yml = .github\workflows\ci.yml
 	EndProjectSection
 EndProject
 Global
@@ -39,5 +44,8 @@ Global
 		{13E652C3-0772-42FC-9776-E17254A9A3FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{13E652C3-0772-42FC-9776-E17254A9A3FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{13E652C3-0772-42FC-9776-E17254A9A3FC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{7522D764-6E83-4CD2-ACEB-3518DB6A78F0} = {6C9E875F-607F-45F5-8889-365DF910B383}
 	EndGlobalSection
 EndGlobal
