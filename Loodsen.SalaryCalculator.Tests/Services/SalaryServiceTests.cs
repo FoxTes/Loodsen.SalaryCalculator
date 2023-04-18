@@ -1,5 +1,6 @@
 ﻿namespace Loodsen.SalaryCalculator.Tests.Services;
 
+[UseCulture("ru-RU")]
 public class SalaryServiceTests
 {
     private readonly SalaryService _salaryService;
