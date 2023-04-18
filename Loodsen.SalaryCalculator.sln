@@ -16,6 +16,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Loodsen.SalaryCalculator.Te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Loodsen.SalaryCalculator.Benchmarks", "Loodsen.SalaryCalculator.Benchmarks\Loodsen.SalaryCalculator.Benchmarks.csproj", "{13E652C3-0772-42FC-9776-E17254A9A3FC}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workflows", "Workflows", "{651062F1-72CF-43C5-9A1C-D459A6A3D7EA}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\dotnet.yml = .github\workflows\dotnet.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
