@@ -17,25 +17,13 @@ public class LoggerBenchmark
     }
 
     [Benchmark]
-    public void WriteLog()
-    {
-        _logger.Information(@"Test value");
-    }
+    public void WriteLog() => _logger.Information(@"Test value");
 
     [Benchmark]
-    public void WriteStructuredLog()
-    {
-        _logger.Information(@"Test value - {Value} or {String}", 1, "Test");
-    }
+    public void WriteStructuredLog() => _logger.Information(@"Test value - {Value} or {String}", 1, "Test");
 
     [Benchmark]
-    public void WriteLogWithParam()
-    {
+    public void WriteLogWithParam() =>
         _logger.Information(
-            "Расчет: брутто {Brutto}, премия {Premium}, дата {Date}, неучтенные дни: {FreeDays}",
-            1,
-            2,
-            _dateTime,
-            _array);
-    }
+            "Value1 {Value1}, Value2 {Value2}, Value3 {Value3}, Value4 {Value4}", 1, 2, _dateTime, _array);
 }

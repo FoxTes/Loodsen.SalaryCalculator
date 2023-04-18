@@ -14,8 +14,6 @@ public class SalaryServiceBenchmark
     }
 
     [Benchmark]
-    public async Task<Salary> CalculateTest()
-    {
-        return await _salaryService.CalculateAsync(1000, 500, "06.01.2022", Array.Empty<DaysRange>());
-    }
+    public async Task<Salary> CalculateTest() =>
+        await _salaryService.CalculateAsync(1000, 500, "06.01.2022", Array.Empty<DaysRange>());
 }

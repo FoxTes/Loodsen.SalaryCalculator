@@ -14,8 +14,5 @@ public class IsDayOffServiceBenchmark
     }
 
     [Benchmark]
-    public async Task<string> GetMonth()
-    {
-        return await _isDayOffService.GetMonthAsync(new DateOnly(2023, 2, default));
-    }
+    public async Task<string> GetMonth() => await _isDayOffService.GetMonthAsync(new DateOnly(2023, 2, default));
 }

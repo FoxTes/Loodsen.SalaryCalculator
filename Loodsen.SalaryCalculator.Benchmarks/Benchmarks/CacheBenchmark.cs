@@ -17,14 +17,8 @@ public class CacheBenchmark
     }
 
     [Benchmark]
-    public int SetMemoryCache()
-    {
-        return _memoryCache.Set(_date, 1);
-    }
+    public int SetMemoryCache() => _memoryCache.Set(_date, 1);
 
     [Benchmark]
-    public void SetCache()
-    {
-        _cache.Add(_date.ToString(), 1);
-    }
+    public void SetCache() => _cache.Add(_date.ToString(), 1);
 }
