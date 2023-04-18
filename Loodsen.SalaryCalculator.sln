@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Loodsen.SalaryCalculator", "Loodsen.SalaryCalculator\Loodsen.SalaryCalculator.csproj", "{31135D8B-609C-4BE9-82D6-4075241B7031}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionFolder", "SolutionFolder", "{F1243D35-8414-4C79-8AAF-6DC08BA159C6}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		Dockerfile = Dockerfile
+		.dockerignore = .dockerignore
+		stylecop.ruleset = stylecop.ruleset
+		Directory.Build.props = Directory.Build.props
+		stylecopTests.ruleset = stylecopTests.ruleset
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Loodsen.SalaryCalculator.Tests", "Loodsen.SalaryCalculator.Tests\Loodsen.SalaryCalculator.Tests.csproj", "{BC00370E-DF6E-48E7-8CF4-D7B8F5E5A514}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Loodsen.SalaryCalculator.Benchmarks", "Loodsen.SalaryCalculator.Benchmarks\Loodsen.SalaryCalculator.Benchmarks.csproj", "{13E652C3-0772-42FC-9776-E17254A9A3FC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{31135D8B-609C-4BE9-82D6-4075241B7031}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31135D8B-609C-4BE9-82D6-4075241B7031}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31135D8B-609C-4BE9-82D6-4075241B7031}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31135D8B-609C-4BE9-82D6-4075241B7031}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC00370E-DF6E-48E7-8CF4-D7B8F5E5A514}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC00370E-DF6E-48E7-8CF4-D7B8F5E5A514}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC00370E-DF6E-48E7-8CF4-D7B8F5E5A514}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC00370E-DF6E-48E7-8CF4-D7B8F5E5A514}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13E652C3-0772-42FC-9776-E17254A9A3FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13E652C3-0772-42FC-9776-E17254A9A3FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13E652C3-0772-42FC-9776-E17254A9A3FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13E652C3-0772-42FC-9776-E17254A9A3FC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

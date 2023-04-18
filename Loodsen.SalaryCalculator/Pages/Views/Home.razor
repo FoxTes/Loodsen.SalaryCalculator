@@ -1,0 +1,122 @@
+﻿@page "/"
+
+@inherits ReactiveUI.Blazor.ReactiveComponentBase<HomeViewModel>
+
+@inject IFeatureManager FeatureManager;
+
+<PageTitle>Home</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Small">
+    <MudText Typo="Typo.h3" GutterBottom="true">Лоция</MudText>
+    <MudText Class="mb-8">Добро пожаловать в калькулятор зарплаты для сотрудников Лоции.</MudText>
+
+    <MudNumericField @bind-Value="ViewModel!.SalaryBrutto"
+                     FullWidth="false"
+                     HideSpinButtons="true"
+                     Min="0"
+                     Format="N0"
+                     Label="Укажите оклад"
+                     Immediate="true"
+                     Variant="Variant.Outlined" Class="mb-4"/>
+    <MudNumericField @bind-Value="ViewModel!.SalaryAdditional"
+                     HideSpinButtons="true"
+                     Label="Укажите доп. соглашения"
+                     Min="0"
+                     Format="N0"
+                     Immediate="true"
+                     Class="mb-4"
+                     Variant="Variant.Outlined"/>
+    <MudTextField @bind-Value="ViewModel!.Date"
+                  Variant="Variant.Outlined"
+                  Label="Выберите месяц"
+                  InputType="InputType.Month"
+                  Class="mb-4"
+                  T="string"/>
+
+    @if (_featureFreeDays)
+    {
+        <MudExpansionPanels Elevation="4">
+            <MudExpansionPanel Text="Неучтенные дни">
+                @foreach (var daysRange in ViewModel!.DaysRanges)
+                {
+                    <MudStack Row="true" Justify="Justify.SpaceAround" AlignItems="AlignItems.End" Spacing="6" Class="mb-2">
+                        <MudDateRangePicker Label="Укажите диапозон"
+                                            Tag="daysRange.Id"
+                                            DateRange="daysRange.DateRange">
+                            <PickerActions>
+                                <MudButton Class="mr-auto align-self-start"
+                                           OnClick="@(async () => 
+                                                    { 
+                                                        context.Clear(); 
+                                                        await ViewModel!.AddOrUpdateDaysRange
+                                                            .Execute(DaysRange.FromGuid((Guid)context.Tag))
+                                                            .ToTask(); 
+                                                    })">
+                                    Очистить
+                                </MudButton>
+                                <MudButton
+                                    OnClick="@(() => context.Close(false))">
+                                    Отменить
+                                </MudButton>
+                                <MudButton Color="Color.Primary"
+                                           OnClick="@(async () => 
+                                                    { 
+                                                        context.Close(); 
+                                                        await ViewModel!.AddOrUpdateDaysRange
+                                                            .Execute(new DaysRange((Guid)context.Tag, ((MudDateRangePicker)context).DateRange))
+                                                            .ToTask(); 
+                                                    })">
+                                    Принять
+                                </MudButton>
+                            </PickerActions>
+                        </MudDateRangePicker>
+                        <MudIconButton Class="mb-1"
+                                       Icon="@Icons.Material.Filled.Delete"
+                                       Size="Size.Small"
+                                       OnClick="@(async () => { await ViewModel!.RemoveDaysRange.Execute(daysRange.Id).ToTask(); })"
+                                       aria-label="delete">
+                        </MudIconButton>
+                    </MudStack>
+                }
+                <MudButton Class="mt-4"
+                           Variant="Variant.Filled"
+                           OnClick="@(async () => {await ViewModel!.AddOrUpdateDaysRange.Execute(DaysRange.Empty).ToTask(); })"
+                           StartIcon="@Icons.Material.Filled.Add"
+                           Color="Color.Info">
+                    Добавить
+                </MudButton>
+            </MudExpansionPanel>
+        </MudExpansionPanels>
+    }
+    
+    @if (ViewModel!.IsShow)
+    {
+        <div visa class="mt-8 d-flex align-end justify-space-between mud-width-full">
+            <div class="d-flex flex-column">
+                <MudText Align="Align.Left">
+                    Зарплата -
+                    <b>@ViewModel!.Salary.Payment.Value.ToString("N2")</b>
+                    руб от
+                    <b>@ViewModel!.Salary.Payment.Date</b>
+                </MudText>
+                <MudText Align="Align.Left">
+                    Аванс -
+                    <b>@ViewModel!.Salary.Prepayment.Value.ToString("N2")</b>
+                    руб от
+                    <b>@ViewModel!.Salary.Prepayment.Date</b>
+                </MudText>
+                <MudText Class="mt-6" Align="Align.Left" Typo="Typo.body2">
+                    * выплаты указываются за <b>текущий</b> месяц
+                </MudText>
+            </div>
+        </div>
+    }
+</MudContainer>
+
+@code
+{
+    private bool _featureFreeDays;
+
+    protected override async Task OnInitializedAsync() => 
+        _featureFreeDays = await FeatureManager.IsEnabledAsync(FeatureFlags.FreeDays);
+}
