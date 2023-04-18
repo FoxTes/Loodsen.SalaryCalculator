@@ -45,7 +45,7 @@ public class HomeViewModel : ReactiveObject
                     Date = date,
                     FreeDaysRange = _daysRanges
                         .Where(x => x.DateRange.Start is not null)
-                        .ToArray(),
+                        .ToArray()
                 });
 
         propsObservable

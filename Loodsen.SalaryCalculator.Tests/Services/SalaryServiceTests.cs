@@ -33,14 +33,14 @@ public class SalaryServiceTests
             {
                 new object[]
                 {
-                    325_000, 5000, "2023-03", 114_307.89, 128_522.27, new DaysRange[]
+                    162_500, 5000, "2023-03", 59_329.17, 64_261.14, new DaysRange[]
                     {
                         new(Guid.Empty, new DateRange(new DateTime(2023, 2, 1), new DateTime(2023, 2, 3)))
                     }
                 },
                 new object[]
                 {
-                    325_000, 5000, "2023-03", 114_307.89, 102_818.18, new DaysRange[]
+                    162_500, 5000, "2023-03", 59_329.17, 51_409.09, new DaysRange[]
                     {
                         new(Guid.Empty, new DateRange(new DateTime(2023, 3, 1), new DateTime(2023, 3, 3)))
                     }
@@ -50,10 +50,10 @@ public class SalaryServiceTests
     }
 
     [Theory]
-    [InlineData(325_000, 5000, "2022-12", 152_457.10, 141_375)]
-    [InlineData(325_000, 5000, "2023-01", 145_725, 83_162.24)]
-    [InlineData(325_000, 5000, "2023-02", 203_937.76, 172_792.11)]
-    [InlineData(325_000, 5000, "2023-03", 114_307.89, 128_522.27)]
+    [InlineData(162_500, 5000, "2022-12", 78_403.58, 70_687.5)]
+    [InlineData(162_500, 5000, "2023-01", 75_037.50, 41_581.12)]
+    [InlineData(162_500, 5000, "2023-02", 10_4144.12, 86_396.06)]
+    [InlineData(162_500, 5000, "2023-03", 59_329.17, 64_261.14)]
     public async Task Calculate_ReturnsCorrectSalaryValues(
         decimal brutto,
         decimal premium,
