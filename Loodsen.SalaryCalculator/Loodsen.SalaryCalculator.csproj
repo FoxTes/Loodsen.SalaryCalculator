@@ -3,7 +3,7 @@
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="DynamicData" Version="7.13.1" />
+        <PackageReference Include="DynamicData" Version="7.13.5" />
         <PackageReference Include="isdayoff" Version="1.7.0" />
         <PackageReference Include="Microsoft.FeatureManagement.AspNetCore" Version="2.5.1" />
         <PackageReference Include="MudBlazor" Version="6.2.2" />
