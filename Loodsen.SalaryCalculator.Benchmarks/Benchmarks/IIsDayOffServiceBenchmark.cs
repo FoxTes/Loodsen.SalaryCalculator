@@ -9,7 +9,7 @@ public class IsDayOffServiceBenchmark
     [GlobalSetup]
     public void Setup()
     {
-        var factory = new CustomWebApplicationFactory<IMarker>();
+        using var factory = new CustomWebApplicationFactory<IMarker>();
         _isDayOffService = factory.Services.GetService<IIsDayOffService>()!;
     }
 

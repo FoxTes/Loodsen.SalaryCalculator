@@ -49,7 +49,7 @@
                                                     { 
                                                         context.Clear(); 
                                                         await ViewModel!.AddOrUpdateDaysRange
-                                                            .Execute(DaysRange.FromGuid((Guid)context.Tag))
+                                                            .Execute(DaysRange.FromGuid((Guid)context.Tag!))
                                                             .ToTask(); 
                                                     })">
                                     Очистить
@@ -63,7 +63,7 @@
                                                     { 
                                                         context.Close(); 
                                                         await ViewModel!.AddOrUpdateDaysRange
-                                                            .Execute(new DaysRange((Guid)context.Tag, ((MudDateRangePicker)context).DateRange))
+                                                            .Execute(new DaysRange((Guid)context.Tag!, ((MudDateRangePicker)context).DateRange))
                                                             .ToTask(); 
                                                     })">
                                     Принять

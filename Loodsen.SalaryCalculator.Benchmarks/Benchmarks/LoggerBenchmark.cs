@@ -12,7 +12,7 @@ public class LoggerBenchmark
     [GlobalSetup]
     public void Setup()
     {
-        var factory = new CustomWebApplicationFactory<IMarker>();
+        using var factory = new CustomWebApplicationFactory<IMarker>();
         _logger = factory.Services.GetService<ILogger>()!;
     }
 

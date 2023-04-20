@@ -1,22 +1,26 @@
 ﻿namespace Loodsen.SalaryCalculator.Services;
 
-using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Primitives;
 
 /// <inheritdoc />
 public class IsDayOffService : IIsDayOffService
 {
+    private readonly ILogger _logger;
     private readonly HttpClient _httpClient;
     private readonly IMemoryCache _memoryCache;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="IsDayOffService"/> class.
     /// </summary>
+    /// <param name="logger"><see cref="ILogger"/>.</param>
     /// <param name="httpClient"><see cref="HttpClient"/>.</param>
     /// <param name="memoryCache"><see cref="IMemoryCache"/>.</param>
-    public IsDayOffService(HttpClient httpClient, IMemoryCache memoryCache)
+    public IsDayOffService(
+        ILogger logger,
+        HttpClient httpClient,
+        IMemoryCache memoryCache)
     {
+        _logger = logger.ForContext<IsDayOffService>();
         _httpClient = httpClient;
         _memoryCache = memoryCache;
     }
@@ -28,20 +32,30 @@ public class IsDayOffService : IIsDayOffService
         if (cacheResult is not null)
             return cacheResult;
 
-        var url = QueryHelpers.AddQueryString(
-            "api/getdata",
-            new List<KeyValuePair<string, StringValues>>
-            {
-                new("year", new StringValues(date.Year.ToString())),
-                new("month", new StringValues(date.Month.ToString())),
-                new("pre", new StringValues("1"))
-            });
+        var url = $"api/getdata?year={date.Year}&month={date.Month}&pre=1";
+        try
+        {
+            var result = await _httpClient.GetStringAsync(url, cancellationToken);
+            if (string.IsNullOrEmpty(result))
+                throw new HttpRequestException("Ответ от сервера пуст");
 
-        var result = await _httpClient.GetStringAsync(url, cancellationToken);
-        if (string.IsNullOrEmpty(result))
-            throw new Exception();
-
-        _memoryCache.Set(date, result, DateTimeOffset.Now.AddDays(1));
-        return result;
+            _memoryCache.Set(date, result, DateTimeOffset.UtcNow.AddDays(1));
+            return result;
+        }
+        catch (HttpRequestException ex)
+        {
+            _logger.Error(ex, "Ошибка при выполнении запроса на удаленный сервер");
+            throw;
+        }
+        catch (OperationCanceledException ex)
+        {
+            _logger.Error(ex, "Операция отменена");
+            throw;
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "Неизвестная ошибка");
+            throw;
+        }
     }
 }

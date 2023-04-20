@@ -3,7 +3,7 @@
 /// <summary>
 /// View model for <see cref="Home"/>.
 /// </summary>
-public class HomeViewModel : ReactiveObject
+public class HomeViewModel : ReactiveObject, IDisposable
 {
     [SuppressMessage("ReSharper", "PrivateFieldCanBeConvertedToLocalVariable", Justification = "Memory leak")]
     private readonly ISalaryService _salaryService;
@@ -62,6 +62,14 @@ public class HomeViewModel : ReactiveObject
     }
 
     /// <summary>
+    /// Finalizes an instance of the <see cref="HomeViewModel"/> class.
+    /// </summary>
+    ~HomeViewModel()
+    {
+        Dispose(false);
+    }
+
+    /// <summary>
     /// Salary in brutto.
     /// </summary>
     [Reactive]
@@ -105,4 +113,20 @@ public class HomeViewModel : ReactiveObject
     /// Non-working days.
     /// </summary>
     public ReadOnlyObservableCollection<DaysRange> DaysRanges => _daysRanges;
+
+    /// <inheritdoc/>
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    /// <inheritdoc cref="HomeViewModel.Dispose()" />
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!disposing)
+            return;
+        AddOrUpdateDaysRange.Dispose();
+        RemoveDaysRange.Dispose();
+    }
 }

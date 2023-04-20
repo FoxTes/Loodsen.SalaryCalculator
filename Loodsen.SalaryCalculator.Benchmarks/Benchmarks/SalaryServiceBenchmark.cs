@@ -9,7 +9,7 @@ public class SalaryServiceBenchmark
     [GlobalSetup]
     public void Setup()
     {
-        var factory = new CustomWebApplicationFactory<IMarker>();
+        using var factory = new CustomWebApplicationFactory<IMarker>();
         _salaryService = factory.Services.GetService<ISalaryService>()!;
     }
 
