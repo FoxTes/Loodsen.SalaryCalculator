@@ -3,7 +3,7 @@
 using Microsoft.Extensions.Caching.Memory;
 
 /// <inheritdoc />
-public class IsDayOffService : IIsDayOffService
+public sealed class IsDayOffService : IIsDayOffService
 {
     private readonly ILogger _logger;
     private readonly HttpClient _httpClient;

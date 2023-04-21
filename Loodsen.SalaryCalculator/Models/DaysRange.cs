@@ -1,6 +1,6 @@
 ﻿namespace Loodsen.SalaryCalculator.Models;
 
-public record DaysRange(Guid Id, DateRange DateRange)
+public sealed record DaysRange(Guid Id, DateRange DateRange)
 {
     /// <summary>
     /// Create empty object.

@@ -3,7 +3,7 @@
 /// <summary>
 /// Global exception handler.
 /// </summary>
-public class ExceptionHandler : IObserver<Exception>
+public sealed class ExceptionHandler : IObserver<Exception>
 {
     private readonly ILogger _logger;
 

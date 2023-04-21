@@ -1,6 +1,6 @@
 ﻿namespace Loodsen.SalaryCalculator.Pages.Views;
 
-public partial class Home
+public sealed partial class Home
 {
     /// <summary>
     /// <see cref="HomeViewModel"/>.

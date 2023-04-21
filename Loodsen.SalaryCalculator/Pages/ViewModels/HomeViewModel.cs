@@ -3,7 +3,7 @@
 /// <summary>
 /// View model for <see cref="Home"/>.
 /// </summary>
-public class HomeViewModel : ReactiveObject, IDisposable
+public sealed class HomeViewModel : ReactiveObject, IDisposable
 {
     [SuppressMessage("ReSharper", "PrivateFieldCanBeConvertedToLocalVariable", Justification = "Memory leak")]
     private readonly ISalaryService _salaryService;
@@ -46,6 +46,7 @@ public class HomeViewModel : ReactiveObject, IDisposable
                     FreeDaysRange = _daysRanges
                         .Where(x => x.DateRange.Start is not null)
                         .ToArray()
+                        .AsReadOnly()
                 });
 
         propsObservable
@@ -64,10 +65,7 @@ public class HomeViewModel : ReactiveObject, IDisposable
     /// <summary>
     /// Finalizes an instance of the <see cref="HomeViewModel"/> class.
     /// </summary>
-    ~HomeViewModel()
-    {
-        Dispose(false);
-    }
+    ~HomeViewModel() => Dispose(false);
 
     /// <summary>
     /// Salary in brutto.
@@ -122,7 +120,7 @@ public class HomeViewModel : ReactiveObject, IDisposable
     }
 
     /// <inheritdoc cref="HomeViewModel.Dispose()" />
-    protected virtual void Dispose(bool disposing)
+    private void Dispose(bool disposing)
     {
         if (!disposing)
             return;

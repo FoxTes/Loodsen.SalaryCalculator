@@ -8,5 +8,5 @@ public static class FeatureFlags
     /// <summary>
     /// Feature not-work days.
     /// </summary>
-    public const string FreeDays = "FreeDays";
+    public const string FreeDays = nameof(FreeDays);
 }

@@ -1,7 +1,7 @@
 ﻿namespace Loodsen.SalaryCalculator.Services;
 
 /// <inheritdoc />
-public class SalaryService : ISalaryService
+public sealed class SalaryService : ISalaryService
 {
     private const decimal TaxRate = 0.87m;
 
@@ -39,7 +39,7 @@ public class SalaryService : ISalaryService
     private async ValueTask<decimal> GetPrepayment(
         decimal salaryBrutto,
         DateOnly dateOnly,
-        IEnumerable<DaysRange> ranges)
+        IReadOnlyCollection<DaysRange> ranges)
     {
         var month = await _isDayOffService.GetMonthAsync(dateOnly);
         return LocalGetPrepayment();
