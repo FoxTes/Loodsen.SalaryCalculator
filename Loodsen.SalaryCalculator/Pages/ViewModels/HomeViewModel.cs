@@ -19,7 +19,6 @@ public sealed class HomeViewModel : ReactiveObject, IDisposable
         _salaryService = salaryService;
 
         var daysRanges = new SourceCache<DaysRange, Guid>(daysRange => daysRange.Id);
-        daysRanges.AddOrUpdate(DaysRange.Empty);
         daysRanges.Connect()
             .Sort(SortExpressionComparer<DaysRange>.Ascending(t => t.DateRange.Start ?? DateTime.MaxValue))
             .ObserveOn(RxApp.MainThreadScheduler)
@@ -51,6 +50,7 @@ public sealed class HomeViewModel : ReactiveObject, IDisposable
 
         propsObservable
             .Where(x => (x.Salary.Item1 != default || x.Salary.Item2 != default) && !string.IsNullOrEmpty(x.Date))
+            .Do(_ => InputChange.OnNext(Unit.Default))
             .SelectMany(x => _salaryService.CalculateAsync(x.Salary.Item1, x.Salary.Item2, x.Date!, x.FreeDaysRange))
             .ToPropertyEx(this, z => z.Salary);
 
@@ -58,8 +58,12 @@ public sealed class HomeViewModel : ReactiveObject, IDisposable
             .Select(x => (x.Salary.Item1 != default || x.Salary.Item2 != default) && !string.IsNullOrEmpty(x.Date))
             .ToPropertyEx(this, z => z.IsShow);
 
-        AddOrUpdateDaysRange = ReactiveCommand.Create(new Action<DaysRange>(range => daysRanges.AddOrUpdate(range)));
-        RemoveDaysRange = ReactiveCommand.Create(new Action<Guid>(guid => daysRanges.Remove(DaysRange.FromGuid(guid))));
+        AddOrUpdateDaysRange =
+            ReactiveCommand.Create(new Action<DaysRange>(range => daysRanges.AddOrUpdate(range)));
+        AddOrUpdateDaysRanges =
+            ReactiveCommand.Create(new Action<IReadOnlyCollection<DaysRange>>(ranges => daysRanges.AddOrUpdate(ranges)));
+        RemoveDaysRange =
+            ReactiveCommand.Create(new Action<Guid>(guid => daysRanges.Remove(DaysRange.FromGuid(guid))));
     }
 
     /// <summary>
@@ -98,9 +102,19 @@ public sealed class HomeViewModel : ReactiveObject, IDisposable
     public Salary Salary { get; }
 
     /// <summary>
+    /// Event about change of input data.
+    /// </summary>
+    public Subject<Unit> InputChange { get; } = new();
+
+    /// <summary>
     /// Add or update a range of non-working days.
     /// </summary>
     public ReactiveCommand<DaysRange, Unit> AddOrUpdateDaysRange { get; }
+
+    /// <summary>
+    /// Add or update a ranges of non-working days.
+    /// </summary>
+    public ReactiveCommand<IReadOnlyCollection<DaysRange>, Unit> AddOrUpdateDaysRanges { get; }
 
     /// <summary>
     /// Delete a range of non-working days.
@@ -126,5 +140,6 @@ public sealed class HomeViewModel : ReactiveObject, IDisposable
             return;
         AddOrUpdateDaysRange.Dispose();
         RemoveDaysRange.Dispose();
+        InputChange.Dispose();
     }
 }
