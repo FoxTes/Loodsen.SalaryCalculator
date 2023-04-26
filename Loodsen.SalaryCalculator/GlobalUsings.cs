@@ -11,8 +11,6 @@ global using System.Reactive.Subjects;
 global using System.Reactive.Threading.Tasks;
 global using DynamicData;
 global using DynamicData.Binding;
-global using isdayoff;
-global using isdayoff.Contract;
 global using Loodsen.SalaryCalculator.Abstractions;
 global using Loodsen.SalaryCalculator.Constants;
 global using Loodsen.SalaryCalculator.Extensions;

@@ -3,8 +3,6 @@
 global using System.Globalization;
 global using System.Reflection;
 global using FluentAssertions;
-global using isdayoff;
-global using isdayoff.Contract;
 global using Xunit;
 global using Loodsen.SalaryCalculator.Abstractions;
 global using Loodsen.SalaryCalculator.Models;
