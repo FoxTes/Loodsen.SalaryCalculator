@@ -14,10 +14,4 @@ public sealed partial class Home
                 .DisposeWith(disposable);
         });
     }
-
-    /// <summary>
-    /// <see cref="HomeViewModel"/>.
-    /// </summary>
-    [Inject]
-    public HomeViewModel HomeViewModel { set => ViewModel = value; }
 }

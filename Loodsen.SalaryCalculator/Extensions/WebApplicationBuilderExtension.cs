@@ -45,7 +45,7 @@ public static class WebApplicationBuilderExtension
         builder.Services.AddSingleton<ISalaryService, SalaryService>();
         builder.Services.AddSingleton<ExceptionHandler>();
 
-        builder.Services.AddTransient<HomeViewModel>();
+        builder.Services.AddScoped<HomeViewModel>();
 
         return builder;
     }
