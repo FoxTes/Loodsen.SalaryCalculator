@@ -3,12 +3,13 @@
 /// <summary>
 /// View model for <see cref="Home"/>.
 /// </summary>
-public sealed class HomeViewModel : ReactiveObject, IDisposable
+public sealed class HomeViewModel : ReactiveObject, IActivatableViewModel, IDisposable
 {
     [SuppressMessage("ReSharper", "PrivateFieldCanBeConvertedToLocalVariable", Justification = "Memory leak")]
     private readonly ISalaryService _salaryService;
+    private readonly SourceCache<DaysRange, Guid> _sourceCache = new(daysRange => daysRange.Id);
 
-    private readonly ReadOnlyObservableCollection<DaysRange> _daysRanges;
+    private ReadOnlyObservableCollection<DaysRange> _daysRanges = null!;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="HomeViewModel"/> class.
@@ -18,52 +19,56 @@ public sealed class HomeViewModel : ReactiveObject, IDisposable
     {
         _salaryService = salaryService;
 
-        var daysRanges = new SourceCache<DaysRange, Guid>(daysRange => daysRange.Id);
-        daysRanges.Connect()
-            .Sort(SortExpressionComparer<DaysRange>.Ascending(t => t.DateRange.Start ?? DateTime.MaxValue))
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .Bind(out _daysRanges)
-            .DisposeMany()
-            .Subscribe();
+        AddOrUpdateDaysRange = ReactiveCommand
+            .Create(new Action<DaysRange>(range => _sourceCache.AddOrUpdate(range)));
+        AddOrUpdateDaysRanges = ReactiveCommand
+            .Create(new Action<IReadOnlyCollection<DaysRange>>(ranges => _sourceCache.AddOrUpdate(ranges)));
+        RemoveDaysRange = ReactiveCommand
+            .Create(new Action<Guid>(guid => _sourceCache.Remove(DaysRange.FromGuid(guid))));
 
-        var propsObservable = this
-            .WhenAnyValue(x => x.SalaryBrutto, v => v.SalaryAdditional)
-            .Throttle(TimeSpan.FromSeconds(0.8), RxApp.TaskpoolScheduler)
-            .DistinctUntilChanged()
-            .CombineLatest(
-                this.WhenValueChanged(z => z.Date)
-                    .DistinctUntilChanged(),
-                _daysRanges.ToObservableChangeSet()
-                    .DistinctUntilChanged()
-                    .Select(x => x.First())
-                    .Where(x => x.Item.Current is { DateRange.Start: not null })
-                    .StartWith(default(Change<DaysRange>)),
-                (salary, date, _) => new
-                {
-                    Salary = new { salary.Item1, salary.Item2 },
-                    Date = date,
-                    FreeDaysRange = _daysRanges
-                        .Where(x => x.DateRange.Start is not null)
-                        .ToArray()
-                        .AsReadOnly()
-                });
+        this.WhenActivated(disposable =>
+        {
+            _sourceCache.Connect()
+                .Sort(SortExpressionComparer<DaysRange>.Ascending(t => t.DateRange.Start ?? DateTime.MaxValue))
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Bind(out _daysRanges)
+                .DisposeMany()
+                .Subscribe()
+                .DisposeWith(disposable);
 
-        propsObservable
-            .Where(x => (x.Salary.Item1 != default || x.Salary.Item2 != default) && !string.IsNullOrEmpty(x.Date))
-            .Do(_ => InputChange.OnNext(Unit.Default))
-            .SelectMany(x => _salaryService.CalculateAsync(x.Salary.Item1, x.Salary.Item2, x.Date!, x.FreeDaysRange))
-            .ToPropertyEx(this, z => z.Salary);
+            var propsObservable = this
+                .WhenAnyValue(x => x.SalaryBrutto, v => v.SalaryAdditional)
+                .Throttle(TimeSpan.FromSeconds(0.8), RxApp.TaskpoolScheduler)
+                .DistinctUntilChanged()
+                .CombineLatest(
+                    this.WhenValueChanged(z => z.Date)
+                        .DistinctUntilChanged(),
+                    _daysRanges.ToObservableChangeSet()
+                        .DistinctUntilChanged()
+                        .Select(x => x.First())
+                        .Where(x => x.Item.Current is { DateRange.Start: not null })
+                        .StartWith(default(Change<DaysRange>)),
+                    (salary, date, _) => new SalaryRequest(
+                        salary.Item1,
+                        salary.Item2,
+                        date,
+                        _daysRanges
+                            .Where(x => x.DateRange.Start is not null)
+                            .ToArray()
+                            .AsReadOnly()));
 
-        propsObservable
-            .Select(x => (x.Salary.Item1 != default || x.Salary.Item2 != default) && !string.IsNullOrEmpty(x.Date))
-            .ToPropertyEx(this, z => z.IsShow);
+            propsObservable
+                .Where(x => (x.SalaryBrutto != default || x.SalaryAdditional != default) && !string.IsNullOrEmpty(x.Date))
+                .Do(_ => InputChange.OnNext(Unit.Default))
+                .SelectMany(x => _salaryService.CalculateAsync(x.SalaryBrutto, x.SalaryAdditional, x.Date!, x.Ranges!))
+                .ToPropertyEx(this, z => z.Salary)
+                .DisposeWith(disposable);
 
-        AddOrUpdateDaysRange =
-            ReactiveCommand.Create(new Action<DaysRange>(range => daysRanges.AddOrUpdate(range)));
-        AddOrUpdateDaysRanges =
-            ReactiveCommand.Create(new Action<IReadOnlyCollection<DaysRange>>(ranges => daysRanges.AddOrUpdate(ranges)));
-        RemoveDaysRange =
-            ReactiveCommand.Create(new Action<Guid>(guid => daysRanges.Remove(DaysRange.FromGuid(guid))));
+            propsObservable
+                .Select(x => (x.SalaryBrutto != default || x.SalaryAdditional != default) && !string.IsNullOrEmpty(x.Date))
+                .ToPropertyEx(this, z => z.IsShow)
+                .DisposeWith(disposable);
+        });
     }
 
     /// <summary>
@@ -127,6 +132,9 @@ public sealed class HomeViewModel : ReactiveObject, IDisposable
     public ReadOnlyObservableCollection<DaysRange> DaysRanges => _daysRanges;
 
     /// <inheritdoc/>
+    public ViewModelActivator Activator { get; } = new();
+
+    /// <inheritdoc/>
     public void Dispose()
     {
         Dispose(true);
@@ -138,6 +146,8 @@ public sealed class HomeViewModel : ReactiveObject, IDisposable
     {
         if (!disposing)
             return;
+
+        AddOrUpdateDaysRanges.Dispose();
         AddOrUpdateDaysRange.Dispose();
         RemoveDaysRange.Dispose();
         InputChange.Dispose();
