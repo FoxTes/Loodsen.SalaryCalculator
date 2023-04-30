@@ -74,14 +74,33 @@
                         <MudIconButton Class="mb-1"
                                        Icon="@Icons.Material.Filled.Delete"
                                        Size="Size.Small"
-                                       OnClick="@(async () => { await ViewModel!.RemoveDaysRange.Execute(daysRange.Id).ToTask(); })"
+                                       OnClick="@(async () => 
+                                                { 
+                                                    if (ViewModel.DaysRanges.Count == 1) 
+                                                    {
+                                                        await ViewModel!.AddOrUpdateDaysRange
+                                                            .Execute(DaysRange.FromGuid(daysRange.Id))
+                                                            .ToTask(); 
+                                                    } 
+                                                    else 
+                                                    {
+                                                        await ViewModel!.RemoveDaysRange
+                                                            .Execute(daysRange.Id)
+                                                            .ToTask(); 
+                                                    }
+                                                })"
                                        aria-label="delete">
                         </MudIconButton>
                     </MudStack>
                 }
                 <MudButton Class="mt-4"
                            Variant="Variant.Filled"
-                           OnClick="@(async () => {await ViewModel!.AddOrUpdateDaysRange.Execute(DaysRange.Empty).ToTask(); })"
+                           OnClick="@(async () => 
+                                    {
+                                        await ViewModel!.AddOrUpdateDaysRange
+                                            .Execute(DaysRange.Empty)
+                                            .ToTask(); 
+                                    })"
                            StartIcon="@Icons.Material.Filled.Add"
                            Color="Color.Info">
                     Добавить

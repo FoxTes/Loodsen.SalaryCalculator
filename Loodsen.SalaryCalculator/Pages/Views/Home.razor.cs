@@ -34,12 +34,12 @@ public sealed partial class Home
                 ViewModel!.SalaryBrutto = value.SalaryBrutto;
                 ViewModel!.SalaryAdditional = value.SalaryAdditional;
                 ViewModel!.Date = value.Date;
-                await ViewModel!.AddOrUpdateDaysRanges.Execute(value.Ranges!).ToTask();
+
+                if (value.Ranges!.Count != 0)
+                    await ViewModel!.AddOrUpdateDaysRanges.Execute(value.Ranges!).ToTask();
             }
-            else
-            {
-                await ViewModel!.AddOrUpdateDaysRange.Execute(DaysRange.Empty).ToTask();
-            }
+
+            await ViewModel!.AddOrUpdateDaysRange.Execute(DaysRange.Empty).ToTask();
         }
     }
 
