@@ -85,8 +85,17 @@ public static class WebApplicationBuilderExtension
     {
         builder.Services
             .AddHttpClient<IIsDayOffService, IsDayOffService>()
-            .ConfigureHttpClient((_, httpClient) => httpClient.BaseAddress = new Uri("https://isdayoff.ru/"));
+            .ConfigureHttpClient((_, httpClient) => httpClient.BaseAddress = new Uri("https://isdayoff.ru/"))
+            .AddPolicyHandler(GetRetryPolicy());
 
         return builder;
+    }
+
+    private static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
+    {
+        return HttpPolicyExtensions
+            .HandleTransientHttpError()
+            .OrResult(result => !result.IsSuccessStatusCode)
+            .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
     }
 }

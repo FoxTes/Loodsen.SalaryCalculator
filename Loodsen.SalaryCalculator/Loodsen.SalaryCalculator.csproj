@@ -4,6 +4,7 @@
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="DynamicData" Version="7.13.5" />
+        <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="7.0.5" />
         <PackageReference Include="Microsoft.FeatureManagement.AspNetCore" Version="2.5.1" />
         <PackageReference Include="MudBlazor" Version="6.2.2" />
         <PackageReference Include="ReactiveUI.Blazor" Version="18.4.34" />

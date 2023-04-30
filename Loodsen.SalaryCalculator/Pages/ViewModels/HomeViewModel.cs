@@ -20,11 +20,11 @@ public sealed class HomeViewModel : ReactiveObject, IActivatableViewModel, IDisp
         _salaryService = salaryService;
 
         AddOrUpdateDaysRange = ReactiveCommand
-            .Create(new Action<DaysRange>(range => _sourceCache.AddOrUpdate(range)));
+            .Create<DaysRange>(range => _sourceCache.AddOrUpdate(range));
         AddOrUpdateDaysRanges = ReactiveCommand
-            .Create(new Action<IReadOnlyCollection<DaysRange>>(ranges => _sourceCache.AddOrUpdate(ranges)));
+            .Create<IReadOnlyCollection<DaysRange>>(ranges => _sourceCache.AddOrUpdate(ranges));
         RemoveDaysRange = ReactiveCommand
-            .Create(new Action<Guid>(guid => _sourceCache.Remove(DaysRange.FromGuid(guid))));
+            .Create<Guid>(guid => _sourceCache.Remove(DaysRange.FromGuid(guid)));
 
         this.WhenActivated(disposable =>
         {

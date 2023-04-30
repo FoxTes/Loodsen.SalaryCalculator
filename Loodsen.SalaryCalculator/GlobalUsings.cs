@@ -27,6 +27,8 @@ global using Microsoft.AspNetCore.Mvc.RazorPages;
 global using Microsoft.FeatureManagement;
 global using MudBlazor;
 global using MudBlazor.Services;
+global using Polly;
+global using Polly.Extensions.Http;
 global using ReactiveUI;
 global using ReactiveUI.Fody.Helpers;
 global using Serilog;
