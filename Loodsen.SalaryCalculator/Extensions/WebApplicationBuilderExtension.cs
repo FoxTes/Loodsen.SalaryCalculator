@@ -33,18 +33,45 @@ public static class WebApplicationBuilderExtension
     }
 
     /// <summary>
+    /// Add infrastructure.
+    /// </summary>
+    /// <param name="builder"><see cref="WebApplicationBuilder"/>.</param>
+    public static WebApplicationBuilder AddInfrastructure(this WebApplicationBuilder builder)
+    {
+        if (!builder.Environment.IsDevelopment())
+        {
+            builder.Services.AddHttpsRedirection(options =>
+            {
+                options.RedirectStatusCode = (int)HttpStatusCode.PermanentRedirect;
+                options.HttpsPort = 433;
+            });
+        }
+
+        builder.Services.AddFeatureManagement();
+        builder.Services.AddMemoryCache();
+
+        return builder;
+    }
+
+    /// <summary>
     /// Add services.
     /// </summary>
     /// <param name="builder"><see cref="WebApplicationBuilder"/>.</param>
     public static WebApplicationBuilder AddServices(this WebApplicationBuilder builder)
     {
-        builder.Services.AddFeatureManagement();
-        builder.Services.AddMemoryCache();
-
         builder.Services.AddSingleton<IIsDayOffService, IsDayOffService>();
         builder.Services.AddSingleton<ISalaryService, SalaryService>();
         builder.Services.AddSingleton<ExceptionHandler>();
 
+        return builder;
+    }
+
+    /// <summary>
+    /// Add view models.
+    /// </summary>
+    /// <param name="builder"><see cref="WebApplicationBuilder"/>.</param>
+    public static WebApplicationBuilder AddViewModels(this WebApplicationBuilder builder)
+    {
         builder.Services.AddScoped<HomeViewModel>();
 
         return builder;
