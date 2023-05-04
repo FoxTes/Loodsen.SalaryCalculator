@@ -18,6 +18,7 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseRxExceptionHandler();
 app.UseDefaultCulture();
+app.UseAppVersionLogging();
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 app.Run();

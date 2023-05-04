@@ -29,4 +29,18 @@ public static class WebApplicationExtension
 
         return app;
     }
+
+    /// <summary>
+    /// Use application version logging.
+    /// </summary>
+    /// <param name="app"><see cref="IApplicationBuilder"/>.</param>
+    public static IApplicationBuilder UseAppVersionLogging(this IApplicationBuilder app)
+    {
+        var logger = app.ApplicationServices.GetService<ILogger>()!;
+        var versionService = app.ApplicationServices.GetService<IAppVersionService>()!;
+
+        logger.Information("Version application: {Version}", versionService.Version);
+
+        return app;
+    }
 }
