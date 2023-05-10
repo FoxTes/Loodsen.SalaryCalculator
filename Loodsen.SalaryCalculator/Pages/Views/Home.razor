@@ -119,12 +119,22 @@
                     руб от
                     <b>@ViewModel!.Salary.Payment.Date</b>
                 </MudText>
-                <MudText Align="Align.Left">
-                    Аванс -
-                    <b>@ViewModel!.Salary.Prepayment.Value.ToString("N2")</b>
-                    руб от
-                    <b>@ViewModel!.Salary.Prepayment.Date</b>
-                </MudText>
+                <div class="d-flex flex-grow-1">
+                    <MudText Align="Align.Left">
+                        Аванс -
+                        <b>@ViewModel!.Salary.Prepayment.Value.ToString("N2")</b>
+                    </MudText>
+                    @if (ViewModel!.Salary.Prepayment.LossesPercent > 0)
+                    {
+                        <MudText Color ="Color.Error" Align="Align.Left">
+                            <b>&nbsp;(&#11015;@ViewModel!.Salary.Prepayment.LossesPercent.ToString("N1")%)</b>
+                        </MudText>
+                    }
+                    <MudText Align="Align.Left">
+                        &nbsp;руб от
+                        <b>@ViewModel!.Salary.Prepayment.Date</b>
+                    </MudText>
+                </div>
                 <MudText Class="mt-6" Align="Align.Left" Typo="Typo.body2">
                     * выплаты указываются за <b>текущий</b> месяц
                 </MudText>

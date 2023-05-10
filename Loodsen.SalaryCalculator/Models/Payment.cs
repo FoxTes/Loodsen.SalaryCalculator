@@ -1,3 +1,6 @@
 ﻿namespace Loodsen.SalaryCalculator.Models;
 
-public readonly record struct Payment(decimal Value, DateOnly Date);
+public readonly record struct Payment(
+    decimal Value,
+    float LossesPercent,
+    DateOnly Date);

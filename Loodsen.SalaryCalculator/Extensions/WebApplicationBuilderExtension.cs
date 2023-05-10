@@ -43,7 +43,7 @@ public static class WebApplicationBuilderExtension
             builder.Services.AddHttpsRedirection(options =>
             {
                 options.RedirectStatusCode = (int)HttpStatusCode.PermanentRedirect;
-                options.HttpsPort = 433;
+                options.HttpsPort = 80;
             });
         }
 
