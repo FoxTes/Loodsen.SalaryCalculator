@@ -99,7 +99,7 @@ public class SalaryServiceTests
         string expectedPrepaymentDate)
     {
         // Act
-        var salary = await _salaryService.CalculateAsync(0, 0, date, Array.Empty<DaysRange>());
+        var salary = await _salaryService.CalculateAsync(100, 0, date, Array.Empty<DaysRange>());
 
         // Assert
         salary.Payment.Date.Should().Be(DateOnly.Parse(expectedPaymentDate));
