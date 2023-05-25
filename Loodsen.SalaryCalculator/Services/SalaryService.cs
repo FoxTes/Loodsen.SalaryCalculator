@@ -4,6 +4,7 @@
 public sealed class SalaryService : ISalaryService
 {
     private const decimal TaxRate = 0.87m;
+    private const int LastDayMonth = 31;
 
     private readonly IIsDayOffService _isDayOffService;
 
@@ -35,7 +36,7 @@ public sealed class SalaryService : ISalaryService
                 await GetPayDay(currentMonthDayOffInfo, dateOnly, Salary.Payday)),
             new Payment(
                 prepaymentCurrentMonth,
-                100 - prepaymentCurrentMonth.ToPercent(prepaymentCurrentMonthOnlyWeekends),
+                100 - (float)prepaymentCurrentMonth.ToPercent(prepaymentCurrentMonthOnlyWeekends),
                 await GetPayDay(currentMonthDayOffInfo, dateOnly, Salary.PrepaymentDay)));
     }
 
@@ -116,7 +117,7 @@ public sealed class SalaryService : ISalaryService
                 startDay -= 1;
 
                 if (startDay < 0)
-                    return GetPayDay(null, dateOnly.AddMonths(-1), 31);
+                    return GetPayDay(null, dateOnly.AddMonths(-1), LastDayMonth);
             }
         }
     }

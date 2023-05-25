@@ -138,6 +138,12 @@
                 <MudText Class="mt-6" Align="Align.Left" Typo="Typo.body2">
                     * выплаты указываются за <b>текущий</b> месяц
                 </MudText>
+                @if (ViewModel!.Salary.Prepayment.LossesPercent > 0)
+                {
+                    <MudText Color ="Color.Error" Align="Align.Left" Typo="Typo.body2">
+                        * процентная потеря аванса из-за <b>праздничных</b> дней
+                    </MudText>
+                }
             </div>
         </div>
     }

@@ -7,7 +7,7 @@ public sealed class HomeViewModel : ReactiveObject, IActivatableViewModel, IDisp
 {
     [SuppressMessage("ReSharper", "PrivateFieldCanBeConvertedToLocalVariable", Justification = "Memory leak")]
     private readonly ISalaryService _salaryService;
-    private readonly SourceCache<DaysRange, Guid> _sourceCache = new(daysRange => daysRange.Id);
+    private readonly SourceCache<DaysRange, Guid> _daysRangesCache = new(daysRange => daysRange.Id);
 
     private ReadOnlyObservableCollection<DaysRange> _daysRanges = null!;
 
@@ -20,15 +20,15 @@ public sealed class HomeViewModel : ReactiveObject, IActivatableViewModel, IDisp
         _salaryService = salaryService;
 
         AddOrUpdateDaysRange = ReactiveCommand
-            .Create<DaysRange>(range => _sourceCache.AddOrUpdate(range));
+            .Create<DaysRange>(range => _daysRangesCache.AddOrUpdate(range));
         AddOrUpdateDaysRanges = ReactiveCommand
-            .Create<IReadOnlyCollection<DaysRange>>(ranges => _sourceCache.AddOrUpdate(ranges));
+            .Create<IReadOnlyCollection<DaysRange>>(ranges => _daysRangesCache.AddOrUpdate(ranges));
         RemoveDaysRange = ReactiveCommand
-            .Create<Guid>(guid => _sourceCache.Remove(DaysRange.FromGuid(guid)));
+            .Create<Guid>(guid => _daysRangesCache.Remove(DaysRange.FromGuid(guid)));
 
         this.WhenActivated(disposable =>
         {
-            _sourceCache.Connect()
+            _daysRangesCache.Connect()
                 .Sort(SortExpressionComparer<DaysRange>.Ascending(t => t.DateRange.Start ?? DateTime.MaxValue))
                 .ObserveOn(RxApp.MainThreadScheduler)
                 .Bind(out _daysRanges)
