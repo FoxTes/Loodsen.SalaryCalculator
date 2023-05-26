@@ -25,6 +25,7 @@ global using Microsoft.AspNetCore.Components;
 global using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.AspNetCore.Mvc.RazorPages;
+global using Microsoft.Extensions.Caching.Memory;
 global using Microsoft.FeatureManagement;
 global using MudBlazor;
 global using MudBlazor.Services;

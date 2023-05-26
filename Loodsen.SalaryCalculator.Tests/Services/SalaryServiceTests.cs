@@ -10,19 +10,19 @@ public class SalaryServiceTests
         var isDayOffMock = new Mock<IIsDayOffService>();
         isDayOffMock
             .Setup(x => x.GetMonthAsync(new DateOnly(2022, 11, 1), It.IsAny<CancellationToken>()))
-            .ReturnsAsync("002111000001100000110000011000");
+            .ReturnsAsync("002811000001100000110000011000");
         isDayOffMock
             .Setup(x => x.GetMonthAsync(new DateOnly(2022, 12, 1), It.IsAny<CancellationToken>()))
             .ReturnsAsync("0011000001100000110000011000001");
         isDayOffMock
             .Setup(x => x.GetMonthAsync(new DateOnly(2023, 01, 1), It.IsAny<CancellationToken>()))
-            .ReturnsAsync("1111111100000110000011000001100");
+            .ReturnsAsync("8888888800000110000011000001100");
         isDayOffMock
             .Setup(x => x.GetMonthAsync(new DateOnly(2023, 02, 1), It.IsAny<CancellationToken>()))
-            .ReturnsAsync("0001100000110000011002111100");
+            .ReturnsAsync("0001100000110000011002811100");
         isDayOffMock
             .Setup(x => x.GetMonthAsync(new DateOnly(2023, 03, 1), It.IsAny<CancellationToken>()))
-            .ReturnsAsync("0001102100110000011000001100000");
+            .ReturnsAsync("0001102800110000011000001100000");
         _salaryService = new SalaryService(isDayOffMock.Object);
     }
 
@@ -68,6 +68,25 @@ public class SalaryServiceTests
         // Assert
         salary.Payment.Value.Should().BeApproximately(expectedPayment, 1m);
         salary.Prepayment.Value.Should().BeApproximately(expectedPrepayment, 1m);
+    }
+
+    [Theory]
+    [InlineData(0, "2022-12", 0)]
+    [InlineData(5000, "2022-12", 0)]
+    [InlineData(0, "2023-01", 43.4)]
+    [InlineData(5000, "2023-01", 43.4)]
+    [InlineData(0, "2023-02", -5.56)]
+    [InlineData(0, "2023-03", 5)]
+    public async Task Calculate_ReturnsCorrectSalaryLossesPercentValues(
+        decimal premium,
+        string date,
+        decimal lossesPercent)
+    {
+        // Act
+        var salary = await _salaryService.CalculateAsync(100, premium, date, Array.Empty<DaysRange>());
+
+        // Assert
+        salary.Prepayment.LossesPercent.Should().BeApproximately(lossesPercent, 0.1m);
     }
 
     [Theory]

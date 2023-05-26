@@ -2,5 +2,5 @@
 
 public readonly record struct Payment(
     decimal Value,
-    float LossesPercent,
+    decimal LossesPercent,
     DateOnly Date);

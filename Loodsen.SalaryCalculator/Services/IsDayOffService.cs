@@ -1,7 +1,5 @@
 ﻿namespace Loodsen.SalaryCalculator.Services;
 
-using Microsoft.Extensions.Caching.Memory;
-
 /// <inheritdoc />
 public sealed class IsDayOffService : IIsDayOffService
 {

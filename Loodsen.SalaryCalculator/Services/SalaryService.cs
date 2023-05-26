@@ -36,7 +36,7 @@ public sealed class SalaryService : ISalaryService
                 await GetPayDay(currentMonthDayOffInfo, dateOnly, Salary.Payday)),
             new Payment(
                 prepaymentCurrentMonth,
-                100 - (float)prepaymentCurrentMonth.ToPercent(prepaymentCurrentMonthOnlyWeekends),
+                100 - prepaymentCurrentMonth.ToPercent(prepaymentCurrentMonthOnlyWeekends),
                 await GetPayDay(currentMonthDayOffInfo, dateOnly, Salary.PrepaymentDay)));
     }
 
