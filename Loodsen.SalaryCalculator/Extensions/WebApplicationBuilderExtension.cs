@@ -9,6 +9,24 @@ public static class WebApplicationBuilderExtension
     /// Add logging.
     /// </summary>
     /// <param name="builder"><see cref="WebApplicationBuilder"/>.</param>
+    public static WebApplicationBuilder AddAzureAppConfiguration(this WebApplicationBuilder builder)
+    {
+        builder.Configuration.AddAzureAppConfiguration(options =>
+        {
+            var connectionString = builder.Configuration.GetConnectionString("AppConfig");
+            options
+                .Connect(connectionString)
+                .UseFeatureFlags(featureFlagOptions =>
+                    featureFlagOptions.CacheExpirationInterval = TimeSpan.FromMinutes(5));
+        });
+
+        return builder;
+    }
+
+    /// <summary>
+    /// Add logging.
+    /// </summary>
+    /// <param name="builder"><see cref="WebApplicationBuilder"/>.</param>
     public static WebApplicationBuilder AddLogging(this WebApplicationBuilder builder)
     {
         builder.Host.UseSerilog((hostingContext, loggerConfiguration) =>
@@ -40,6 +58,7 @@ public static class WebApplicationBuilderExtension
     {
         if (!builder.Environment.IsDevelopment())
         {
+            builder.Services.AddApplicationInsightsTelemetry();
             builder.Services.AddHttpsRedirection(options =>
             {
                 options.RedirectStatusCode = (int)HttpStatusCode.PermanentRedirect;
@@ -47,6 +66,7 @@ public static class WebApplicationBuilderExtension
             });
         }
 
+        builder.Services.AddAzureAppConfiguration();
         builder.Services.AddFeatureManagement();
         builder.Services.AddMemoryCache();
 

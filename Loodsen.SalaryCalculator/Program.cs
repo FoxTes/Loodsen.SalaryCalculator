@@ -1,4 +1,5 @@
 var builder = WebApplication.CreateBuilder(args)
+    .AddAzureAppConfiguration()
     .AddLogging()
     .AddMudBlazor()
     .AddInfrastructure()
@@ -13,6 +14,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.UseAzureAppConfiguration();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
