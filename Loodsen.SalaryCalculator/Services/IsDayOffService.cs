@@ -1,7 +1,5 @@
 ﻿namespace Loodsen.SalaryCalculator.Services;
 
-using Microsoft.Extensions.Caching.Memory;
-
 /// <inheritdoc />
 public sealed class IsDayOffService : IIsDayOffService
 {
@@ -32,7 +30,7 @@ public sealed class IsDayOffService : IIsDayOffService
         if (cacheResult is not null)
             return cacheResult;
 
-        var url = $"api/getdata?year={date.Year}&month={date.Month}&pre=1";
+        var url = $"api/getdata?year={date.Year}&month={date.Month}&holiday=1&pre=1";
         try
         {
             var result = await _httpClient.GetStringAsync(url, cancellationToken);

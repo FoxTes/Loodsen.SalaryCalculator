@@ -4,6 +4,7 @@
 public sealed class SalaryService : ISalaryService
 {
     private const decimal TaxRate = 0.87m;
+    private const int LastDayMonth = 31;
 
     private readonly IIsDayOffService _isDayOffService;
 
@@ -21,25 +22,29 @@ public sealed class SalaryService : ISalaryService
         IReadOnlyCollection<DaysRange> ranges)
     {
         var dateOnly = DateOnly.Parse(date);
-
-        var prepaymentCurrentMonth = await GetPrepayment(brutto, dateOnly, ranges);
-        var prepaymentLastMonth = await GetPrepayment(brutto, dateOnly.AddMonths(-1), Array.Empty<DaysRange>());
         var currentMonthDayOffInfo = await _isDayOffService.GetMonthAsync(dateOnly);
 
+        var prepaymentCurrentMonth = await GetPrepayment(brutto, dateOnly, ranges);
+        var prepaymentCurrentMonthOnlyWeekends = await GetPrepayment(brutto, dateOnly, ranges, true);
+        var prepaymentLastMonth = await GetPrepayment(brutto, dateOnly.AddMonths(-1), Array.Empty<DaysRange>());
         var paymentLastMonth = (brutto + additional) * TaxRate - prepaymentLastMonth;
+
         return new Salary(
             new Payment(
                 paymentLastMonth,
+                0,
                 await GetPayDay(currentMonthDayOffInfo, dateOnly, Salary.Payday)),
             new Payment(
                 prepaymentCurrentMonth,
+                100 - prepaymentCurrentMonth.ToPercent(prepaymentCurrentMonthOnlyWeekends),
                 await GetPayDay(currentMonthDayOffInfo, dateOnly, Salary.PrepaymentDay)));
     }
 
     private async ValueTask<decimal> GetPrepayment(
         decimal salaryBrutto,
         DateOnly dateOnly,
-        IReadOnlyCollection<DaysRange> ranges)
+        IReadOnlyCollection<DaysRange> ranges,
+        bool isOnlyWeekends = false)
     {
         var month = await _isDayOffService.GetMonthAsync(dateOnly);
         return LocalGetPrepayment();
@@ -50,7 +55,7 @@ public sealed class SalaryService : ISalaryService
             Span<int> span = stackalloc int[monthSpan.Length];
 
             for (var i = 0; i < monthSpan.Length; i++)
-                span[i] = ParseDay(int.Parse(monthSpan.Slice(i, 1)));
+                span[i] = ParseDay(int.Parse(monthSpan.Slice(i, 1)), isOnlyWeekends);
 
             var workingHoursMonthCount = 0;
             var workingHoursMonthFirstHalfCount = 0;
@@ -58,12 +63,15 @@ public sealed class SalaryService : ISalaryService
             foreach (var t in span)
                 workingHoursMonthCount += t;
 
-            foreach (var range in ranges)
+            if (!isOnlyWeekends)
             {
-                if (range.DateRange.Start!.Value.Month != dateOnly.Month)
-                    continue;
-                for (var i = range.DateRange.Start!.Value.Day - 1; i < range.DateRange.End!.Value.Day - 1; i++)
-                    span[i] = 0;
+                foreach (var range in ranges)
+                {
+                    if (range.DateRange.Start!.Value.Month != dateOnly.Month)
+                        continue;
+                    for (var i = range.DateRange.Start!.Value.Day - 1; i < range.DateRange.End!.Value.Day - 1; i++)
+                        span[i] = 0;
+                }
             }
 
             for (var i = 0; i <= 14; i++)
@@ -72,11 +80,13 @@ public sealed class SalaryService : ISalaryService
             return (decimal)(int)(salaryBrutto /
                 workingHoursMonthCount * workingHoursMonthFirstHalfCount * TaxRate * 100) / 100;
 
-            int ParseDay(int data) =>
-                data switch
+            int ParseDay(int data, bool weekends) =>
+                (data, weekends) switch
                 {
-                    0 or 2 => 8,
-                    1 => 0,
+                    (0 or 2, _) => 8,
+                    (1, _) => 0,
+                    (8, false) => 0,
+                    (8, true) => 8,
                     _ => throw new ArgumentOutOfRangeException(nameof(data), data, null)
                 };
         }
@@ -107,7 +117,7 @@ public sealed class SalaryService : ISalaryService
                 startDay -= 1;
 
                 if (startDay < 0)
-                    return GetPayDay(null, dateOnly.AddMonths(-1), 31);
+                    return GetPayDay(null, dateOnly.AddMonths(-1), LastDayMonth);
             }
         }
     }

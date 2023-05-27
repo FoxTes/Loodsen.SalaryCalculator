@@ -119,15 +119,45 @@
                     руб от
                     <b>@ViewModel!.Salary.Payment.Date</b>
                 </MudText>
-                <MudText Align="Align.Left">
-                    Аванс -
-                    <b>@ViewModel!.Salary.Prepayment.Value.ToString("N2")</b>
-                    руб от
-                    <b>@ViewModel!.Salary.Prepayment.Date</b>
-                </MudText>
+                <div class="d-flex flex-grow-1">
+                    <MudText Align="Align.Left">
+                        Аванс -
+                        <b>@ViewModel!.Salary.Prepayment.Value.ToString("N2")</b>
+                    </MudText>
+                    @switch (ViewModel!.Salary.Prepayment.LossesPercent)
+                    {
+                        case > 0:
+                            <MudText Color ="@Color.Error" Align="@Align.Left">
+                                <b>&nbsp;(&#11015;-@ViewModel!.Salary.Prepayment.LossesPercent.ToString("N1")%)</b>
+                            </MudText>
+                            break;
+                        case < 0:
+                            <MudText Color ="@Color.Success" Align="@Align.Left">
+                                <b>&nbsp;(&#11014;+@Math.Abs(ViewModel!.Salary.Prepayment.LossesPercent).ToString("N1")%)</b>
+                            </MudText>
+                            break;
+                    }
+                    <MudText Align="Align.Left">
+                        &nbsp;руб от
+                        <b>@ViewModel!.Salary.Prepayment.Date</b>
+                    </MudText>
+                </div>
                 <MudText Class="mt-6" Align="Align.Left" Typo="Typo.body2">
                     * выплаты указываются за <b>текущий</b> месяц
                 </MudText>
+                @switch (ViewModel!.Salary.Prepayment.LossesPercent)
+                {
+                    case > 0:
+                        <MudText Color ="@Color.Error" Align="@Align.Left" Typo="@Typo.body2">
+                            * процентная потеря аванса из-за <b>праздничных</b> дней
+                        </MudText>
+                        break;
+                    case < 0:
+                        <MudText Color ="@Color.Success" Align="@Align.Left" Typo="@Typo.body2">
+                            * процентный выигрыш аванса из-за <b>праздничных</b> дней
+                        </MudText>
+                        break;
+                }
             </div>
         </div>
     }
