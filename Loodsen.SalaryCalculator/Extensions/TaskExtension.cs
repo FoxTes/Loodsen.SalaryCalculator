@@ -1,20 +1,20 @@
 ﻿namespace Loodsen.SalaryCalculator.Extensions;
 
 /// <summary>
-/// Расширение для <see cref="Task{TResult}"/>.
+/// Extensions for <see cref="Task{TResult}"/>.
 /// </summary>
 public static class TaskExtension
 {
     /// <summary>
-    /// Выполняет задачу и перехватывает любые исключения, которые могут возникнуть.
-    /// Если исключение было перехвачено, то вызывается указанный делегат error handler
-    /// и возвращается значение по умолчанию для типа T.
+    /// Executes a task and catches any exceptions that may occur. If an exception is caught, the specified
+    /// error handler delegate is called and a default value for type T is returned.
     /// </summary>
-    /// <typeparam name="T">Тип результата, производимого задачей.</typeparam>
-    /// <param name="task">Выполняемая задача.</param>
-    /// <param name="errorHandler">Делегат, который будет вызван в случае перехвата исключения.</param>
-    /// <returns>Результат, произведенный задачей,
-    /// или значение по умолчанию для типа T, если произошло исключение.</returns>
+    /// <typeparam name="T">The type of the result produced by the task.</typeparam>
+    /// <param name="task">The task to be executed.</param>
+    /// <param name="errorHandler">The delegate to be called in case of an exception being caught.</param>
+    /// <returns>
+    /// The result produced by the task, or a default value for type T if an exception occurred.
+    /// </returns>
     public static async ValueTask<T> TryCatch<T>(this ValueTask<T> task, Action<Exception>? errorHandler)
     {
         try

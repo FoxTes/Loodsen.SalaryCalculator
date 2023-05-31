@@ -35,24 +35,24 @@ public sealed class IsDayOffService : IIsDayOffService
         {
             var result = await _httpClient.GetStringAsync(url, cancellationToken);
             if (string.IsNullOrEmpty(result))
-                throw new HttpRequestException("Ответ от сервера пуст");
+                throw new HttpRequestException("Server response was empty");
 
             _memoryCache.Set(date, result, DateTimeOffset.UtcNow.AddDays(1));
             return result;
         }
         catch (HttpRequestException ex)
         {
-            _logger.Error(ex, "Ошибка при выполнении запроса на удаленный сервер");
+            _logger.Error(ex, "Error occurred while executing request to remote server");
             throw;
         }
         catch (OperationCanceledException ex)
         {
-            _logger.Error(ex, "Операция отменена");
+            _logger.Error(ex, "Operation was cancelled");
             throw;
         }
         catch (Exception ex)
         {
-            _logger.Error(ex, "Неизвестная ошибка");
+            _logger.Error(ex, "Unknown error occurred");
             throw;
         }
     }
