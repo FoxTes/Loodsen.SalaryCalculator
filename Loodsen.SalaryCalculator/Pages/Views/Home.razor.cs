@@ -26,7 +26,18 @@ public sealed partial class Home
     {
         if (firstRender)
         {
-            var result = await ProtectedLocalStore.GetAsync<SalaryRequest>(CacheKeys.Input);
+            var result = await ProtectedLocalStore
+                .GetAsync<SalaryRequest>(CacheKeys.Input)
+                .TryCatch(ex =>
+                {
+                    Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopRight;
+                    Snackbar.Add(
+                        "Не удалось загрузить предустановленные параметры. " +
+                        "Пожалуйста, очистите кеш и удалите файлы cookie.",
+                        Severity.Error);
+                    Log.ForContext<Home>().Warning(ex, "Не удалось загрузить предустановленные параметры");
+                });
+
             if (result is { Success: true, Value: not null })
             {
                 var value = result.Value;

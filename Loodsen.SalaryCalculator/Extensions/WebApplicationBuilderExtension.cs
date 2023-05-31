@@ -56,19 +56,12 @@ public static class WebApplicationBuilderExtension
     /// <param name="builder"><see cref="WebApplicationBuilder"/>.</param>
     public static WebApplicationBuilder AddInfrastructure(this WebApplicationBuilder builder)
     {
-        if (!builder.Environment.IsDevelopment())
-        {
-            builder.Services.AddApplicationInsightsTelemetry();
-            builder.Services.AddHttpsRedirection(options =>
-            {
-                options.RedirectStatusCode = (int)HttpStatusCode.PermanentRedirect;
-                options.HttpsPort = 80;
-            });
-        }
-
         builder.Services.AddAzureAppConfiguration();
         builder.Services.AddFeatureManagement();
         builder.Services.AddMemoryCache();
+
+        if (!builder.Environment.IsDevelopment())
+            builder.Services.AddApplicationInsightsTelemetry();
 
         return builder;
     }
