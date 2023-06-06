@@ -72,13 +72,22 @@ public static class WebApplicationBuilderExtension
     /// <param name="builder"><see cref="WebApplicationBuilder"/>.</param>
     public static WebApplicationBuilder AddServices(this WebApplicationBuilder builder)
     {
-        builder.Services.Configure<ConsoleLifetimeOptions>(opts => opts.SuppressStatusMessages = true);
-
         builder.Services.AddSingleton<IAppVersionService, AppVersionService>();
         builder.Services.AddSingleton<IIsDayOffService, IsDayOffService>();
         builder.Services.AddSingleton<ISalaryService, SalaryService>();
 
         builder.Services.AddSingleton<ExceptionHandler>();
+
+        return builder;
+    }
+
+    /// <summary>
+    /// Add options.
+    /// </summary>
+    /// <param name="builder"><see cref="WebApplicationBuilder"/>.</param>
+    public static WebApplicationBuilder AddOptions(this WebApplicationBuilder builder)
+    {
+        builder.Services.Configure<ConsoleLifetimeOptions>(opts => opts.SuppressStatusMessages = true);
 
         return builder;
     }
@@ -102,6 +111,7 @@ public static class WebApplicationBuilderExtension
     {
         builder.Services
             .AddHttpClient<IIsDayOffService, IsDayOffService>()
+            .UseHttpClientMetrics()
             .ConfigureHttpClient((_, httpClient) => httpClient.BaseAddress = new Uri("https://isdayoff.ru/"))
             .AddPolicyHandler(GetRetryPolicy());
 

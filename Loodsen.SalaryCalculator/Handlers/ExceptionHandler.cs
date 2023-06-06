@@ -11,7 +11,8 @@ public sealed class ExceptionHandler : IObserver<Exception>
     /// Initializes a new instance of the <see cref="ExceptionHandler"/> class.
     /// </summary>
     /// <param name="logger"><see cref="ILogger"/>.</param>
-    public ExceptionHandler(ILogger logger) => _logger = logger;
+    public ExceptionHandler(ILogger logger) =>
+        _logger = logger.ForContext<ExceptionHandler>();
 
     /// <inheritdoc/>
     public void OnCompleted()

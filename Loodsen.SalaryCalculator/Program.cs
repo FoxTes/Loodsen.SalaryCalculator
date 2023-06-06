@@ -1,6 +1,7 @@
 var builder = WebApplication.CreateBuilder(args)
     .AddAzureAppConfiguration()
     .AddLogging()
+    .AddOptions()
     .AddMudBlazor()
     .AddInfrastructure()
     .AddServices()
@@ -18,9 +19,12 @@ app.UseAzureAppConfiguration();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+app.UseHttpMetrics();
 app.UseRxExceptionHandler();
 app.UseDefaultCulture();
 app.UseAppVersionLogging();
+app.MapMetrics();
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
+
 app.Run();

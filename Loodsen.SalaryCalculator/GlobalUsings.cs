@@ -31,6 +31,7 @@ global using MudBlazor;
 global using MudBlazor.Services;
 global using Polly;
 global using Polly.Extensions.Http;
+global using Prometheus;
 global using ReactiveUI;
 global using ReactiveUI.Fody.Helpers;
 global using Serilog;
