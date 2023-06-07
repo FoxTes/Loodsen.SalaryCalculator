@@ -1,11 +1,14 @@
 ﻿<Router AppAssembly="@typeof(App).Assembly">
     <Found Context="routeData">
-        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)"/>
     </Found>
     <NotFound>
-        <PageTitle>Not found</PageTitle>
-        <LayoutView Layout="@typeof(MainLayout)">
-            <p role="alert">Sorry, there's nothing at this address.</p>
+        <LayoutView Layout="@typeof(ErrorLayout)">
+            <MudStack Spacing="8" AlignItems="AlignItems.Center">
+                <h1>404 Not Found</h1>
+                <p>The requested page could not be found.</p>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" href="/">Return to home</MudButton>
+            </MudStack>
         </LayoutView>
     </NotFound>
 </Router>

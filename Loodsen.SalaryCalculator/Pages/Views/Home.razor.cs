@@ -32,9 +32,9 @@ public sealed partial class Home
                 {
                     Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopRight;
                     Snackbar.Add(
-                        "Не удалось загрузить предустановленные параметры." +
+                        "Не удалось загрузить предустановленные параметры." + Environment.NewLine +
                         "Пожалуйста, очистите кеш и удалите файлы cookie.",
-                        Severity.Error);
+                        Severity.Warning);
                     Log.ForContext<Home>().Warning(ex, "Failed to load preset settings");
                 });
 

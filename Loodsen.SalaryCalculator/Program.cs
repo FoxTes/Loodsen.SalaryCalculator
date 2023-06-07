@@ -23,7 +23,7 @@ app.UseHttpMetrics();
 app.UseRxExceptionHandler();
 app.UseDefaultCulture();
 app.UseAppVersionLogging();
-app.MapMetrics();
+app.UseMetrics();
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 

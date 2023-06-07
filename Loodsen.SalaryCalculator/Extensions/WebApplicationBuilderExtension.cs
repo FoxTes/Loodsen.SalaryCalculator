@@ -60,9 +60,6 @@ public static class WebApplicationBuilderExtension
         builder.Services.AddFeatureManagement();
         builder.Services.AddMemoryCache();
 
-        if (!builder.Environment.IsDevelopment())
-            builder.Services.AddApplicationInsightsTelemetry();
-
         return builder;
     }
 
@@ -88,6 +85,8 @@ public static class WebApplicationBuilderExtension
     public static WebApplicationBuilder AddOptions(this WebApplicationBuilder builder)
     {
         builder.Services.Configure<ConsoleLifetimeOptions>(opts => opts.SuppressStatusMessages = true);
+
+        builder.AddOption<MetricsOption>();
 
         return builder;
     }
@@ -124,5 +123,14 @@ public static class WebApplicationBuilderExtension
             .HandleTransientHttpError()
             .OrResult(result => !result.IsSuccessStatusCode)
             .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
+    }
+
+    private static void AddOption<TOption>(this WebApplicationBuilder builder)
+        where TOption : BaseOption, new()
+    {
+        builder.Services.AddOptions<TOption>()
+            .Bind(builder.Configuration.GetSection(new TOption().Name))
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
     }
 }
